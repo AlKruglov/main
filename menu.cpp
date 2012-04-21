@@ -72,36 +72,15 @@ public:
 Link():first(NULL),last(NULL){}
 int GetCount() {
 return Count; }
-/*void Add(string n){
-Node *current = first;
-Node *newlink = new Node;
-if (first==NULL){//если первый добавляем
-first=newlink;
-last=newlink;
-newlink->next=first;
-newlink->prev=first;
-newlink->data=n;
-}else{
-while (current->next!=first) {//идем до последнего
-current=current->next;
-}
-current->next=newlink;//последний теперь указывает на новый
-first->prev=newlink;
-last=newlink;
-newlink->next=first;
-newlink->prev=current;
-newlink->data=n;
-}
-}
-*/
 void Add(string n, int i){
 		Node *current = first;
 		Node *newlink = new Node;
 		if (first==NULL){//если первый добавляем
 			Count=0;
 			first=newlink;
-			newlink->next=NULL;
-			newlink->prev=NULL;
+			last=newlink;
+			newlink->next=first;
+			newlink->prev=first;
 			newlink->data=n;
 			newlink->id=Count;
 			Count++;
@@ -111,7 +90,7 @@ void Add(string n, int i){
 			}
 			current->next=newlink;//последний теперь указывает на новый
 			first->prev=newlink;
-			newlink->next=NULL;
+			newlink->next=first;
 			newlink->prev=current;
 			newlink->data=n;
 			newlink->id=Count;
@@ -128,10 +107,10 @@ void Addcenter (string n){
 			Count=0;
 			newlink->data=n;
 			newlink->id=Count;
-			newlink->next=NULL;
-			newlink->prev=NULL;
-			//last=newlink;
+			newlink->next=first;
+			newlink->prev=first;
 			first=newlink;
+			last=newlink;
 			Count++;
 		}
 		else{
@@ -142,7 +121,7 @@ void Addcenter (string n){
 				current=current->next;
 			}
 			current=first;
-			//current=last;
+			current=last;
 			int needed_el;
 			if (number_of_elements%2 ==1)
 			{
@@ -157,7 +136,6 @@ void Addcenter (string n){
 			{
 				if (shet == needed_el)
 				{
-				    //last=newlink;
 					newlink->data=n;
 					newlink->id=Count;
 					Count++;
@@ -178,13 +156,6 @@ cout<<current->data<<" "<<current->id<<endl;
 current=current->next;
 } while (current!=NULL);
 }
-/*void Showfromlast(){
-Node *current = last;
-do {
-cout<<current->data<<endl;
-current=current->prev;
-} while (current!=last);
-} */
 };
 bool exit(){//функция выхода
 cout<<"****** press 'y' to exit ******";
@@ -201,9 +172,7 @@ return 0;
 }
 
 int main() {
-    //cout<<getch();
     string s;
-   //Link List;
     Link *tes=new Link;
      int i=0;
                             while(i<100) {
@@ -401,7 +370,7 @@ system("clear");
 cout<<"********* this is show *******";
 cout<<endl;
 cout<<endl;
-/*if (tes->GetCount()!=0) {
+if (tes->GetCount()!=0) {
 cout<<endl;
 tes->Showfromfirst();
 cout<<endl<<endl;
@@ -409,18 +378,7 @@ cout<<endl<<endl;
 else {
 cout<<endl;
 cout<<"0 items";
-}*/
-tes->Showfromfirst();
-/*if (tes->GetCount()!=0) {
-cout<<endl;
-tes->Showfromlast();
-cout<<endl<<endl;
 }
-else {
-cout<<endl;
-cout<<"0 items";
-}
-*/
  break;
             //break;
             case 2://добавление
@@ -493,19 +451,12 @@ AddMenu->Push(selected_item_a);
 AddMenu->Print();
 break;
                         case 10: //энтер в подменю добавления
-                        //Link *tes=new Link;
                         switch(selected_item_a){
                             case 1:
                             system("clear");
-
-
 cin>>s;
 cout<<endl;
-
 tes->Addcenter(s);
-//s='\0';
-/*cout<<"success";
-getchar(); */
 cout<<endl<<endl;
 getchar();
 system("clear");
@@ -532,8 +483,6 @@ break;
                     while (a!=10 || selected_item_a!=3) ;
                     system("clear");
                     MainMenu->Print();
-
-
            break;
 
 case 3://редактирование
@@ -604,9 +553,6 @@ break;
                         MainMenu->Print();
                         break; }
 break;
-
-
-
                     }
                   }
                     while (a!=10 || selected_item_e!=2);

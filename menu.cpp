@@ -61,7 +61,8 @@ class Menu{ // класс для меню
 struct Node{
 Node *next;
 string data;
-Node *prev;//ïðåäûäóùèé
+Node *prev;//предыдущий
+int id;
 };
 class Link{
 Node *first;
@@ -71,24 +72,20 @@ public:
 Link():first(NULL),last(NULL){}
 int GetCount() {
 return Count; }
-
-void Add(string n){
-    Count++;
+/*void Add(string n){
 Node *current = first;
 Node *newlink = new Node;
-
-//while(Count<3) {
-if (first==NULL){//åñëè ïåðâûé äîáàâëÿåì
+if (first==NULL){//если первый добавляем
 first=newlink;
 last=newlink;
 newlink->next=first;
 newlink->prev=first;
 newlink->data=n;
 }else{
-while (current->next!=first) {//èäåì äî ïîñëåäíåãî
+while (current->next!=first) {//идем до последнего
 current=current->next;
 }
-current->next=newlink;//ïîñëåäíèé òåïåðü óêàçûâàåò íà íîâûé
+current->next=newlink;//последний теперь указывает на новый
 first->prev=newlink;
 last=newlink;
 newlink->next=first;
@@ -96,24 +93,98 @@ newlink->prev=current;
 newlink->data=n;
 }
 }
-//if()
-//}
+*/
+void Add(string n, int i){
+		Node *current = first;
+		Node *newlink = new Node;
+		if (first==NULL){//если первый добавляем
+			Count=0;
+			first=newlink;
+			newlink->next=NULL;
+			newlink->prev=NULL;
+			newlink->data=n;
+			newlink->id=Count;
+			Count++;
+		}else{
+			while (current->next!=NULL) {//идем до последнего
+				current=current->next;
+			}
+			current->next=newlink;//последний теперь указывает на новый
+			first->prev=newlink;
+			newlink->next=NULL;
+			newlink->prev=current;
+			newlink->data=n;
+			newlink->id=Count;
+			Count++;
+		}
+	}
 
+void Addcenter (string n){
+	Node *current = first;
+	Node *newlink = new Node;
+	Node *temporary= new Node;
+		if(first == NULL)
+		{
+			Count=0;
+			newlink->data=n;
+			newlink->id=Count;
+			newlink->next=NULL;
+			newlink->prev=NULL;
+			//last=newlink;
+			first=newlink;
+			Count++;
+		}
+		else{
+			int number_of_elements=0;
+			while (current)//идем до конца
+			{
+				number_of_elements++;
+				current=current->next;
+			}
+			current=first;
+			//current=last;
+			int needed_el;
+			if (number_of_elements%2 ==1)
+			{
+				needed_el=number_of_elements/2;
+			}
+			else
+			{
+				needed_el=(number_of_elements-1)/2;
+			}
+			int shet=0;
+			while(shet<needed_el+1)
+			{
+				if (shet == needed_el)
+				{
+				    //last=newlink;
+					newlink->data=n;
+					newlink->id=Count;
+					Count++;
+					newlink->next=current->next;
+					newlink->prev=current;
+					current->next=newlink;
+				}
+				shet++;
+				current=current->next;
+			}
+		}
+}
 
 void Showfromfirst(){
 Node *current = first;
 do {
-cout<<current->data<<endl;
+cout<<current->data<<" "<<current->id<<endl;
 current=current->next;
-} while (current!=first);
+} while (current!=NULL);
 }
-void Showfromlast(){
+/*void Showfromlast(){
 Node *current = last;
 do {
 cout<<current->data<<endl;
 current=current->prev;
 } while (current!=last);
-}
+} */
 };
 bool exit(){//функция выхода
 cout<<"****** press 'y' to exit ******";
@@ -128,25 +199,14 @@ system("clear");
 return 0;
 }
 }
- /*bool back() {
-cout<<"****** press 'y' to  back to main menu ******";
-cout<<endl;
-char sur;
-sur=getch();
- if ( sur == 'y') {
- return 1;
- }
- else {
- system("clear");
- return 0;
- }
- } */
 
 int main() {
     //cout<<getch();
     string s;
-    Link List;
+   //Link List;
     Link *tes=new Link;
+     int i=0;
+                            while(i<100) {
 Menu *MainMenu= new Menu; //списочек
 	MainMenu->Add("Work with Files");
     MainMenu->Add("Show");
@@ -341,7 +401,7 @@ system("clear");
 cout<<"********* this is show *******";
 cout<<endl;
 cout<<endl;
-if (tes->GetCount()!=0) {
+/*if (tes->GetCount()!=0) {
 cout<<endl;
 tes->Showfromfirst();
 cout<<endl<<endl;
@@ -349,9 +409,9 @@ cout<<endl<<endl;
 else {
 cout<<endl;
 cout<<"0 items";
-}
-
-if (tes->GetCount()!=0) {
+}*/
+tes->Showfromfirst();
+/*if (tes->GetCount()!=0) {
 cout<<endl;
 tes->Showfromlast();
 cout<<endl<<endl;
@@ -360,6 +420,7 @@ else {
 cout<<endl;
 cout<<"0 items";
 }
+*/
  break;
             //break;
             case 2://добавление
@@ -437,17 +498,19 @@ break;
                             case 1:
                             system("clear");
 
+
 cin>>s;
 cout<<endl;
 
-tes->Add(s);
-s='\0';
+tes->Addcenter(s);
+//s='\0';
 /*cout<<"success";
 getchar(); */
 cout<<endl<<endl;
 getchar();
 system("clear");
 cout<<"*******this is add*******";
+cout<<endl;
 AddMenu->Print();
 
 break;
@@ -638,10 +701,11 @@ break;
                 MainMenu->Print();
             }
             break;
+            i++;
 
 }
 }
-
+	}
 }
 
 }

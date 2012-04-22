@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdio.h>
+#include <fstream>
 
 using namespace std;
 int const l=6; // kol strok
@@ -65,8 +66,10 @@ Node *prev;//предыдущий
 int id;
 };
 class Link{
+    int idclass;
 Node *first;
 Node *last;
+Node *current;
 int Count;
 public:
 Link():first(NULL),last(NULL){}
@@ -98,7 +101,7 @@ void Add(string n, int i){
 		}
 	}
 
-void Addcenter (string n){
+void Addcenter (string n){ //добавление в центр
 	Node *current = first;
 	Node *newlink = new Node;
 	Node *temporary= new Node;
@@ -148,15 +151,86 @@ void Addcenter (string n){
 			}
 		}
 }
-
-void Showfromfirst(){
+		void Showfromfirst(){ //показать с первого по последний
 Node *current = first;
 do {
 cout<<current->data<<" "<<current->id<<endl;
 current=current->next;
 } while (current!=NULL);
 }
+
+int Kol(){//возвращение id
+return idclass;
+
+}
+void Del(){
+	 if (Count>0) Count--;
+        if(first!= NULL){
+
+    Node *current=first;
+    first=first->next;
+    delete current;
+    }
+}
+void DelAll(){ //удаление всего списка
+while(first!=0){
+    Del();
+}
+}
+
+void addnum(string Str, int Num){
+Node *current= first;
+Node *added = new Node;
+if(current==NULL){
+first=added;
+}
+else {
+while(current->next!= NULL)
+{
+    current=current->next;
+}
+    current->next=added;
+}
+added->next=NULL;
+added->data=Str;
+added->id=Num;
+}
+
+void Mkol(int a){
+	idclass=a;
+}
+
+
+void loadfile(){ // открыть (загрузить) файл
+this->DelAll();
+ifstream out ("binaryfile.bin", ios::binary);
+int kol;
+out>>kol;
+this->Mkol(kol);
+while (!out.eof()){
+string Str;
+int cur;
+out>>Str;
+out>>cur;
+this->addnum(Str,cur);
+}
+out.close();
+}
+
+
+void savefile(){ //сохранить файл
+ofstream to ("binaryfile.bin", ios::binary);
+to<<this->Kol();
+Node *current=first;
+while (current){
+to<<current->data<<' ';
+to<<current->id;
+current=current->next;
+}
+to.close();
+}
 };
+
 bool exit(){//функция выхода
 cout<<"****** press 'y' to exit ******";
 cout<<endl;
@@ -170,13 +244,11 @@ system("clear");
 return 0;
 }
 }
-
 int main() {
     string s;
     Link *tes=new Link;
-     int i=0;
-                            while(i<100) {
-Menu *MainMenu= new Menu; //списочек
+
+Menu *MainMenu= new Menu; //меню и подменю
 	MainMenu->Add("Work with Files");
     MainMenu->Add("Show");
     MainMenu->Add("Add");
@@ -352,6 +424,12 @@ break;
                         case 10: //энтер в подменю файл
 
                         switch(selected_item_f){
+                            case 0:
+                       tes->loadfile(); //вызов загрузки
+                        break;
+                            case 1:
+                          tes->savefile(); //вызов сохранения
+                            break;
                         case 2: //выход в главное меню
                         system("clear");
                         MainMenu->Print();
@@ -370,15 +448,16 @@ system("clear");
 cout<<"********* this is show *******";
 cout<<endl;
 cout<<endl;
-if (tes->GetCount()!=0) {
-cout<<endl;
-tes->Showfromfirst();
-cout<<endl<<endl;
-}
-else {
-cout<<endl;
-cout<<"0 items";
-}
+//if (tes->GetCount()!=0) {
+//cout<<endl;
+tes->Showfromfirst(); //вызов показа
+//List.Print();
+//cout<<endl<<endl;
+//}
+//else {
+//cout<<endl;
+//cout<<"0 items";
+//-}
  break;
             //break;
             case 2://добавление
@@ -456,7 +535,7 @@ break;
                             system("clear");
 cin>>s;
 cout<<endl;
-tes->Addcenter(s);
+tes->Addcenter(s); //вызов добавления в середину
 cout<<endl<<endl;
 getchar();
 system("clear");
@@ -622,6 +701,9 @@ DeleteMenu->Print();
 break;
                         case 10://энтер для удаления
                         switch(selected_item_d){
+                            //case 0:
+                            //tes->DelAll();
+                            //break;
                         case 2://выход в главное меню
                         system("clear");
                         MainMenu->Print();
@@ -647,11 +729,10 @@ break;
                 MainMenu->Print();
             }
             break;
-            i++;
 
 }
 }
 	}
 }
 
-}
+

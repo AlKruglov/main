@@ -61,23 +61,23 @@ class Menu{ // класс для меню
         }
 };
 struct Node{
-Node *next;
+Node *next;//следующий
 string data;
 Node *prev;//предыдущий
-int id;
+int id; //номер элемента
 };
 class Link{
     int idclass;
-Node *first;
-Node *last;
-Node *current;
-int Count;
+Node *first; //указатель на первый
+Node *last; //указатель на последний (голова)
+Node *current; //текущий
+int Count;//счетчик
 public:
 Link():first(NULL),last(NULL){}
-void Add(string n/*, int i*/){
+void Add(string n){ //для работы с файлами
 		Node *current = first;
 		Node *newlink = new Node;
-		if (first==NULL){//если первый добавляем
+		if (first==NULL){//если первый, добавляем
 			Count=0;
 			first=newlink;
 			//last=newlink;
@@ -85,7 +85,7 @@ void Add(string n/*, int i*/){
 			newlink->prev=NULL;
 			newlink->data=n;
 			newlink->id=Count;
-			Count++;
+			Count++; //счетчик
 		}else{
 			while (current->next!=NULL) {//идем до последнего
 				current=current->next;
@@ -96,7 +96,7 @@ void Add(string n/*, int i*/){
 			newlink->prev=current;
 			newlink->data=n;
 			newlink->id=Count;
-			Count++;
+			Count++;//счетчик
 		}
 	}
 
@@ -104,7 +104,7 @@ void Addcenter (string n){ //добавление в центр
 	Node *current = first;
 	Node *newlink = new Node;
 	Node *temporary= new Node;
-		if(first == NULL)
+		if(first == NULL) //если первый, добавляем
 		{
 			Count=0;
 			newlink->data=n;
@@ -150,60 +150,31 @@ void Addcenter (string n){ //добавление в центр
 			}
 		}
 }
-		void Showfromfirst(){ //показать с первого по последний
+		void Show(){ //показать список
 Node *current = first;
 do {
 cout<<current->data<<" "<<current->id<<endl;
 current=current->next;
 } while (current!=NULL);
 }
-
-int Kol(){//возвращение id
-return idclass;
-
-}
-
-
-void addnum(string Str, int Num){
-Node *current= first;
-Node *added = new Node;
-if(current==NULL){
-first=added;
-}
-else {
-while(current->next!= NULL)
-{
-    current=current->next;
-}
-    current->next=added;
-}
-added->next=NULL;
-added->data=Str;
-added->id=Num;
-}
-
-void Mkol(int a){
-	idclass=a;
-}
-
 void savefile(){ //сохранить файл
     		ofstream out;
 
-		out.open("binaryfile.bin");
+		out.open("binaryfile.bin"); //открыть файл
 		Node *current = first;
 	do{
 		out<<current->data<<"\n";
 		current=current->next;
 	} while (current!=NULL);
-	out.close();
+	out.close(); //закрыть файл
 	}
 
 void loadfile(Link *name){ // открыть (загрузить) файл
 ifstream fin;
 			string str;
-			string paststring="meow";
+			string paststring="111";//первоначальное значение элемента
 
-			fin.open("binaryfile.bin",ios::in);
+			fin.open("binaryfile.bin",ios::in); //открыть файл
 			assert (!fin.fail( ));
 
 		while (!fin.eof( )){
@@ -213,7 +184,7 @@ ifstream fin;
 			paststring=str;
 			}
 		}
-		fin.close( );
+		fin.close( ); //закрыть файл
 	}
 
 void Delete(){
@@ -253,7 +224,7 @@ Menu *MainMenu= new Menu; //меню и подменю
     MainMenu->Add("Exit");
 
     Menu *FileMenu= new Menu;
-    FileMenu->Add("Open fail");
+    FileMenu->Add("Open file");
     FileMenu->Add("save change");
     FileMenu->Add("back to main menu");
 
@@ -421,7 +392,7 @@ break;
 
                         switch(selected_item_f){
                             case 0:
-                            tes->Delete();
+                            tes->Delete(); //если список не пуст, удаляем
                        tes->loadfile(tes); //вызов загрузки
                         break;
                             case 1:
@@ -445,18 +416,8 @@ system("clear");
 cout<<"********* this is show *******";
 cout<<endl;
 cout<<endl;
-//if (tes->GetCount()!=0) {
-//cout<<endl;
-tes->Showfromfirst(); //вызов показа
-//List.Print();
-//cout<<endl<<endl;
-//}
-//else {
-//cout<<endl;
-//cout<<"0 items";
-//-}
+tes->Show(); //вызов показа
  break;
-            //break;
             case 2://добавление
             system("clear");
             cout<<"*******this is add*******";
@@ -698,9 +659,6 @@ DeleteMenu->Print();
 break;
                         case 10://энтер для удаления
                         switch(selected_item_d){
-                            //case 0:
-                            //tes->DelAll();
-                            //break;
                         case 2://выход в главное меню
                         system("clear");
                         MainMenu->Print();

@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdio.h>
+#include <assert.h>
 #include <fstream>
 
 using namespace std;
@@ -73,17 +74,15 @@ Node *current;
 int Count;
 public:
 Link():first(NULL),last(NULL){}
-int GetCount() {
-return Count; }
-void Add(string n, int i){
+void Add(string n/*, int i*/){
 		Node *current = first;
 		Node *newlink = new Node;
 		if (first==NULL){//если первый добавляем
 			Count=0;
 			first=newlink;
-			last=newlink;
-			newlink->next=first;
-			newlink->prev=first;
+			//last=newlink;
+			newlink->next=NULL;
+			newlink->prev=NULL;
 			newlink->data=n;
 			newlink->id=Count;
 			Count++;
@@ -93,7 +92,7 @@ void Add(string n, int i){
 			}
 			current->next=newlink;//последний теперь указывает на новый
 			first->prev=newlink;
-			newlink->next=first;
+			newlink->next=NULL;
 			newlink->prev=current;
 			newlink->data=n;
 			newlink->id=Count;
@@ -110,10 +109,10 @@ void Addcenter (string n){ //добавление в центр
 			Count=0;
 			newlink->data=n;
 			newlink->id=Count;
-			newlink->next=first;
-			newlink->prev=first;
+			newlink->next=NULL;
+			newlink->prev=NULL;
 			first=newlink;
-			last=newlink;
+			//last=newlink;
 			Count++;
 		}
 		else{
@@ -124,7 +123,7 @@ void Addcenter (string n){ //добавление в центр
 				current=current->next;
 			}
 			current=first;
-			current=last;
+			//current=last;
 			int needed_el;
 			if (number_of_elements%2 ==1)
 			{
@@ -163,20 +162,7 @@ int Kol(){//возвращение id
 return idclass;
 
 }
-void Del(){
-	 if (Count>0) Count--;
-        if(first!= NULL){
 
-    Node *current=first;
-    first=first->next;
-    delete current;
-    }
-}
-void DelAll(){ //удаление всего списка
-while(first!=0){
-    Del();
-}
-}
 
 void addnum(string Str, int Num){
 Node *current= first;
@@ -200,35 +186,45 @@ void Mkol(int a){
 	idclass=a;
 }
 
-
-void loadfile(){ // открыть (загрузить) файл
-this->DelAll();
-ifstream out ("binaryfile.bin", ios::binary);
-int kol;
-out>>kol;
-this->Mkol(kol);
-while (!out.eof()){
-string Str;
-int cur;
-out>>Str;
-out>>cur;
-this->addnum(Str,cur);
-}
-out.close();
-}
-
-
 void savefile(){ //сохранить файл
-ofstream to ("binaryfile.bin", ios::binary);
-to<<this->Kol();
-Node *current=first;
-while (current){
-to<<current->data<<' ';
-to<<current->id;
-current=current->next;
-}
-to.close();
-}
+    		ofstream out;
+
+		out.open("binaryfile.bin");
+		Node *current = first;
+	do{
+		out<<current->data<<"\n";
+		current=current->next;
+	} while (current!=NULL);
+	out.close();
+	}
+
+void loadfile(Link *name){ // открыть (загрузить) файл
+ifstream fin;
+			string str;
+			string paststring="meow";
+
+			fin.open("binaryfile.bin",ios::in);
+			assert (!fin.fail( ));
+
+		while (!fin.eof( )){
+				fin >> str;
+				if(str != paststring){
+			name->Add(str);
+			paststring=str;
+			}
+		}
+		fin.close( );
+	}
+
+void Delete(){
+			while(first!=NULL){
+			Node *current=first;
+			first=first->next;
+			delete current;
+			}
+			first=NULL;
+		}
+
 };
 
 bool exit(){//функция выхода
@@ -425,7 +421,8 @@ break;
 
                         switch(selected_item_f){
                             case 0:
-                       tes->loadfile(); //вызов загрузки
+                            tes->Delete();
+                       tes->loadfile(tes); //вызов загрузки
                         break;
                             case 1:
                           tes->savefile(); //вызов сохранения

@@ -4,10 +4,10 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdio.h>
-#include <fstream>
+#include <fstream> //для работы с файлами
 
 using namespace std;
-int const l=6; // kol strok
+int const l=6; // количество строк
 
 int getch(){ //чтобы гетч работал
         int ch;
@@ -60,17 +60,17 @@ class Menu{ // класс для меню
         }
 };
 struct Node{
-Node *next;
+Node *next;//следующий
 string data;
 Node *prev;//предыдущий
-int id;
+int id;//номер элемента
 };
 class Link{
     int idclass;
-Node *first;
-Node *last;
-Node *current;
-int Count;
+Node *first; //указатель на первый
+Node *last; // на последний (голова)
+Node *current; //текущий
+int Count; //счетчик
 public:
 Link():first(NULL),last(NULL){}
 int GetCount() {
@@ -86,7 +86,7 @@ void Add(string n, int i){
 			newlink->prev=NULL;
 			newlink->data=n;
 			newlink->id=Count;
-			Count++;
+			Count++; //счетчик
 		}else{
 			while (current->next!=NULL) {//идем до последнего
 				current=current->next;
@@ -97,7 +97,7 @@ void Add(string n, int i){
 			newlink->prev=current;
 			newlink->data=n;
 			newlink->id=Count;
-			Count++;
+			Count++; //счетчик
 		}
 	}
 
@@ -151,7 +151,7 @@ void Addcenter (string n){ //добавление в центр
 			}
 		}
 }
-		void Showfromfirst(){ //показать с первого по последний
+		void Show(){ //показать список
 Node *current = first;
 do {
 cout<<current->data<<" "<<current->id<<endl;
@@ -203,7 +203,7 @@ void Mkol(int a){
 
 void loadfile(){ // открыть (загрузить) файл
 this->DelAll();
-ifstream out ("binaryfile.bin", ios::binary);
+ifstream out ("binaryfile.bin", ios::binary); //открыть файл
 int kol;
 out>>kol;
 this->Mkol(kol);
@@ -214,12 +214,12 @@ out>>Str;
 out>>cur;
 this->addnum(Str,cur);
 }
-out.close();
+out.close(); //закрыть файл
 }
 
 
 void savefile(){ //сохранить файл
-ofstream to ("binaryfile.bin", ios::binary);
+ofstream to ("binaryfile.bin", ios::binary); //открыть файл
 to<<this->Kol();
 Node *current=first;
 while (current){
@@ -227,7 +227,7 @@ to<<current->data<<' ';
 to<<current->id;
 current=current->next;
 }
-to.close();
+to.close();//закрыть файл
 }
 };
 
@@ -448,16 +448,7 @@ system("clear");
 cout<<"********* this is show *******";
 cout<<endl;
 cout<<endl;
-//if (tes->GetCount()!=0) {
-//cout<<endl;
-tes->Showfromfirst(); //вызов показа
-//List.Print();
-//cout<<endl<<endl;
-//}
-//else {
-//cout<<endl;
-//cout<<"0 items";
-//-}
+tes->Show(); //вызов показа
  break;
             //break;
             case 2://добавление
@@ -544,11 +535,8 @@ cout<<endl;
 AddMenu->Print();
 
 break;
-
  case 2:
-
             break;
-
 break;
                         case 3: //выход в главное меню
                         system("clear");
@@ -701,9 +689,6 @@ DeleteMenu->Print();
 break;
                         case 10://энтер для удаления
                         switch(selected_item_d){
-                            //case 0:
-                            //tes->DelAll();
-                            //break;
                         case 2://выход в главное меню
                         system("clear");
                         MainMenu->Print();

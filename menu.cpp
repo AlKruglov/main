@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdio.h>
-#include <assert.h>
 #include <fstream>
 
 using namespace std;
@@ -61,31 +60,33 @@ class Menu{ // класс для меню
         }
 };
 struct Node{
-Node *next;//следующий
+Node *next;
 string data;
 Node *prev;//предыдущий
-int id; //номер элемента
+int id;
 };
 class Link{
     int idclass;
-Node *first; //указатель на первый
-Node *last; //указатель на последний (голова)
-Node *current; //текущий
-int Count;//счетчик
+Node *first;
+Node *last;
+Node *current;
+int Count;
 public:
 Link():first(NULL),last(NULL){}
-void Add(string n){ //для работы с файлами
+int GetCount() {
+return Count; }
+void Add(string n, int i){
 		Node *current = first;
 		Node *newlink = new Node;
-		if (first==NULL){//если первый, добавляем
+		if (first==NULL){//если первый добавляем
 			Count=0;
 			first=newlink;
-			//last=newlink;
+			last=newlink;
 			newlink->next=NULL;
 			newlink->prev=NULL;
 			newlink->data=n;
 			newlink->id=Count;
-			Count++; //счетчик
+			Count++;
 		}else{
 			while (current->next!=NULL) {//идем до последнего
 				current=current->next;
@@ -96,7 +97,7 @@ void Add(string n){ //для работы с файлами
 			newlink->prev=current;
 			newlink->data=n;
 			newlink->id=Count;
-			Count++;//счетчик
+			Count++;
 		}
 	}
 
@@ -104,7 +105,7 @@ void Addcenter (string n){ //добавление в центр
 	Node *current = first;
 	Node *newlink = new Node;
 	Node *temporary= new Node;
-		if(first == NULL) //если первый, добавляем
+		if(first == NULL)
 		{
 			Count=0;
 			newlink->data=n;
@@ -150,52 +151,84 @@ void Addcenter (string n){ //добавление в центр
 			}
 		}
 }
-		void Show(){ //показать список
+		void Showfromfirst(){ //показать с первого по последний
 Node *current = first;
 do {
 cout<<current->data<<" "<<current->id<<endl;
 current=current->next;
 } while (current!=NULL);
 }
+
+int Kol(){//возвращение id
+return idclass;
+
+}
+void Del(){
+	 if (Count>0) Count--;
+        if(first!= NULL){
+
+    Node *current=first;
+    first=first->next;
+    delete current;
+    }
+}
+void DelAll(){ //удаление всего списка
+while(first!=0){
+    Del();
+}
+}
+
+void addnum(string Str, int Num){
+Node *current= first;
+Node *added = new Node;
+if(current==NULL){
+first=added;
+}
+else {
+while(current->next!= NULL)
+{
+    current=current->next;
+}
+    current->next=added;
+}
+added->next=NULL;
+added->data=Str;
+added->id=Num;
+}
+
+void Mkol(int a){
+	idclass=a;
+}
+
+
+void loadfile(){ // открыть (загрузить) файл
+this->DelAll();
+ifstream out ("binaryfile.bin", ios::binary);
+int kol;
+out>>kol;
+this->Mkol(kol);
+while (!out.eof()){
+string Str;
+int cur;
+out>>Str;
+out>>cur;
+this->addnum(Str,cur);
+}
+out.close();
+}
+
+
 void savefile(){ //сохранить файл
-    		ofstream out;
-
-		out.open("binaryfile.bin"); //открыть файл
-		Node *current = first;
-	do{
-		out<<current->data<<"\n";
-		current=current->next;
-	} while (current!=NULL);
-	out.close(); //закрыть файл
-	}
-
-void loadfile(Link *name){ // открыть (загрузить) файл
-ifstream fin;
-			string str;
-			string paststring="111";//первоначальное значение элемента
-
-			fin.open("binaryfile.bin",ios::in); //открыть файл
-			assert (!fin.fail( ));
-
-		while (!fin.eof( )){
-				fin >> str;
-				if(str != paststring){
-			name->Add(str);
-			paststring=str;
-			}
-		}
-		fin.close( ); //закрыть файл
-	}
-
-void Delete(){
-			while(first!=NULL){
-			Node *current=first;
-			first=first->next;
-			delete current;
-			}
-			first=NULL;
-		}
-
+ofstream to ("binaryfile.bin", ios::binary);
+to<<this->Kol();
+Node *current=first;
+while (current){
+to<<current->data<<' ';
+to<<current->id;
+current=current->next;
+}
+to.close();
+}
 };
 
 bool exit(){//функция выхода
@@ -224,7 +257,7 @@ Menu *MainMenu= new Menu; //меню и подменю
     MainMenu->Add("Exit");
 
     Menu *FileMenu= new Menu;
-    FileMenu->Add("Open file");
+    FileMenu->Add("Open fail");
     FileMenu->Add("save change");
     FileMenu->Add("back to main menu");
 
@@ -392,8 +425,7 @@ break;
 
                         switch(selected_item_f){
                             case 0:
-                            tes->Delete(); //если список не пуст, удаляем
-                       tes->loadfile(tes); //вызов загрузки
+                       tes->loadfile(); //вызов загрузки
                         break;
                             case 1:
                           tes->savefile(); //вызов сохранения
@@ -416,8 +448,18 @@ system("clear");
 cout<<"********* this is show *******";
 cout<<endl;
 cout<<endl;
-tes->Show(); //вызов показа
+//if (tes->GetCount()!=0) {
+//cout<<endl;
+tes->Showfromfirst(); //вызов показа
+//List.Print();
+//cout<<endl<<endl;
+//}
+//else {
+//cout<<endl;
+//cout<<"0 items";
+//-}
  break;
+            //break;
             case 2://добавление
             system("clear");
             cout<<"*******this is add*******";
@@ -659,6 +701,9 @@ DeleteMenu->Print();
 break;
                         case 10://энтер для удаления
                         switch(selected_item_d){
+                            //case 0:
+                            //tes->DelAll();
+                            //break;
                         case 2://выход в главное меню
                         system("clear");
                         MainMenu->Print();
@@ -689,5 +734,4 @@ break;
 }
 	}
 }
-
 
